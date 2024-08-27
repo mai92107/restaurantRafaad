@@ -26,22 +26,34 @@ const cartReducer = (state = initialState, action) => {
             };
         
         case actionType.ADD_ITEMS_TO_CART_SUCCESS:
+
+            const updatedCartItem = [action.payload, ...state.cartItems];
+            const updatedTotalAdd = updatedCartItem.reduce((total, item) => {
+                return total + item.food.price * item.quantity;
+            }, 0);
+    
+            
             return {
-                ...state, loading: false, cartItems: [cartReducer, ...state.cartItems]
-            }
+                ...state, loading: false, cartItems: updatedCartItem, cart:{...state.cart, total:updatedTotalAdd}
+            };
         
         case actionType.UPDATE_CARTITEM_SUCCESS:
+            const updatedItems = state.cartItems.map(item => item.id === action.payload.id ? action.payload : item);
+            const updatedTotalUpdate = updatedItems.reduce((total, item) => {
+                return total + item.food.price * item.quantity;
+            }, 0);
+            
             return {
-                ...state, loading: false, cartItems: state.cartItems.map(
-                    (item) => item.id === action.payload.id ? action.payload : item
-                )
+                ...state, loading: false, cartItems: updatedItems, cart: {...state.cart, total:updatedTotalUpdate}
             };
         
         case actionType.REMOVE_CARTITEM_SUCCESS:
+            const filteredItems = state.cartItems.filter(
+                (item) => item.id !== action.payload
+            );
+            const updatedTotalRemove = filteredItems.reduce((total, item) => total + item.food.price * item.quantity, 0);
             return {
-                ...state, loading: false, cartItems: state.cartItems.filter(
-                    (item) => item.id !== item.payload
-                )
+                ...state, loading: false, cartItems: filteredItems, cart: { ...state.cart, total: updatedTotalRemove }
             };
         
         case actionType.FIND_CART_FAILURE:

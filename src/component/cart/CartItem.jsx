@@ -1,5 +1,5 @@
 import { IconButton } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Chip from '@mui/material/Chip';
@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { removeCartItem, updateCartItem } from '../state/cart/Action';
 
 const CartItem = ({ item }) => {
-    const { cart, auth } = useSelector(store => store);
+    const auth = useSelector(state => state.auth);
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
@@ -20,7 +21,7 @@ const CartItem = ({ item }) => {
         const data = { cartItemId: item.id, quantity: item.quantity + value };
         dispatch(updateCartItem({ data, jwt }));
     }
-
+    
     const handleRemoveCartItem = () => {
         dispatch(removeCartItem({ cartItemId: item.id, jwt: auth.jwt || jwt }))
     }
@@ -47,7 +48,7 @@ const CartItem = ({ item }) => {
               </div>
           </div>
           <div className='pt-3 space-x-2'>
-              {item.ingredients?.map((ingredient) => <Chip label={ingredient} />)}
+              {item.ingredients?.map((ingredient,index) => <Chip label={ingredient} key={index}/>)}
           </div>
     </div>
   )

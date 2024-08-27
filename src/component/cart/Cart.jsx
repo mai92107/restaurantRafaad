@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Divider, TextField } from "@mui/material";
 import CartItem from "./CartItem";
 import AddressCard from "./AddressCard";
@@ -14,6 +14,7 @@ import { Field } from "formik";
 import { Form } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../state/order/Action";
+
 
 export const style = {
   position: "absolute",
@@ -40,14 +41,13 @@ const validationSchema = Yup.object().shape({
   city: Yup.string().required("city is required"),
 });
 
-
 const Cart = () => {
   const dispatch = useDispatch();
+
   const createOrderUsingSelectedAddress = () => {};
   const handleOpenAddressModel = () => setOpen(true);
   const handleSubmit = (values) => {
     const data = {
-      jwt: localStorage.getItem("jwt"),
       order: {
         restaurantId: cart.cartItems[0].food?.restaurant.id,
         deliveryAddress: {
@@ -64,19 +64,23 @@ const Cart = () => {
         console.log("form value", values);
   };
 
+
   const [open, setOpen] = React.useState(false);
-  const { cart , auth} = useSelector(store=>store);
+  const cart = useSelector(state => state.cart);
+  const auth = useSelector(state => state.auth);
   const handleClose = () => setOpen(false);
-  
+  const deliveryFee = 101;
+  const restaurantCharge = 100;
+ 
   return (
     <>
       <main className="lg:flex justify-between">
         <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
           {cart.cartItems.map((item) => (
-            <CartItem item={ item} />
+            <CartItem item={item} key={item.id} />
           ))}
 
-          <Divider />
+          <Divider />  
           <div className="billDetails px-5 text-sm">
             <p className="font-extralight py-5">Bill Details</p>
             <div className="space-y-3">
@@ -86,11 +90,11 @@ const Cart = () => {
               </div>
               <div className="flex justify-between text-gray-400">
                 <p>Delivery Fee</p>
-                <p>$101</p>
+                <p>${deliveryFee}</p>
               </div>
               <div className="flex justify-between text-gray-400">
                 <p>Restaurant Charges</p>
-                <p>$100</p>
+                <p>${restaurantCharge}</p>
               </div>
               <Divider />
               <div className="flex justify-between text-gray-400">
@@ -107,11 +111,12 @@ const Cart = () => {
               Choose Delivery Address
             </h1>
             <div className="flex gap-5 flex-wrap justify-center">
-              {[1, 1, 1, 1, 1].map((item) => (
+              {[1, 1, 1, 1, 1].map((item,index) => (
                 <AddressCard
                   handleSelectAddress={createOrderUsingSelectedAddress}
                   item={item}
                   showButtom={true}
+                  key={index}
                 />
               ))}
               <Card className="flex gap-5 w-64 p-5">

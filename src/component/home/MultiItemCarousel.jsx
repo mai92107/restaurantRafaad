@@ -19,8 +19,8 @@ export const MultiItemCarousel = () => {
 
   return (
     <Slider {...settings}>
-      {topMeal.map((item) =>
-        <CarouselItem image={item.image} title={item.title} />)}
+      {topMeal.map((item,index) =>
+        <CarouselItem image={item.image} title={item.title} key={index}/>)}
     </Slider>
   )
 }

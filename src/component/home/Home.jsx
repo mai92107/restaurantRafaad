@@ -11,8 +11,8 @@ export const Home = () => {
     
     const dispatch = useDispatch();
     const jwt = localStorage.getItem("jwt");
-    const { restaurant } = useSelector(store => store)
-
+    const restaurant = useSelector(state => state.restaurant);
+    
     console.log("restaurant", restaurant);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ export const Home = () => {
               <h1 className='text-2xl font-semibold text-gray-400 pb-8'> Order From Our Handpicked Favorites</h1>
               <div className='flex flex-wrap items-center justify-around gap-5'>
                   {
-                      restaurant.restaurants?.map((item) => <RestaurantCard item={item} />)
+                      restaurant.restaurants?.map((item,index) => <RestaurantCard item={item} key={index}/>)
                   }
               </div>
           </section>

@@ -28,7 +28,11 @@ const RestaurantDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { auth, restaurant, menu } = useSelector((store) => store);
+  const auth = useSelector(state => state.auth);
+  const restaurant = useSelector(state => state.restaurant);
+  const menu = useSelector(state => state.menu);
+
+
   const [foodType, setFoodType] = useState("all");
   const { id, city } = useParams();
   const [selectedCategory, setSelectedCategory] = useState("");

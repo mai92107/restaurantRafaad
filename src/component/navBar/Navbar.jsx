@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Avatar from '@mui/material/Avatar';
@@ -8,12 +8,29 @@ import Badge from '@mui/material/Badge';
 import "./Navbar.css"
 import { Person } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { findCart } from '../state/cart/Action';
 
 
 export const Navbar = () => {
-  const { cart,auth } = useSelector(store => store);
+  const cart = useSelector(state => state.cart);
+
+  console.log(cart.cart?.items.length);
+  const auth = useSelector(state => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [updateTrigger, setUpdateTrigger] = useState(0);
+
+  useEffect(() => {
+    console.log('購物車數量更新了:', cart.cart?.items.length);
+  }, [cart.cart?.items.length, updateTrigger]);
+  
+  const forceUpdate = () => {
+    setUpdateTrigger(prev => prev + 1);
+  }
+
+
   const handleAvatarClick = () => { 
     if (auth.user.role === "ROLE_CUSTOMER") {
       navigate("/my-profile");
@@ -21,6 +38,7 @@ export const Navbar = () => {
       navigate("/admin/restaurant");
     }
   }
+  
   return (
     <div className='px-5 sticky z-50 py-[.9rem] bg-[#e91e63] lg:px-20 flex justify-between'>
 
@@ -48,7 +66,7 @@ export const Navbar = () => {
         </div>
         <div className=''>
           <IconButton onClick={()=>navigate("/cart")}>
-            <Badge color='primary' badgeContent={ cart.cart?.items.length}>
+            <Badge color='primary' badgeContent={ cart.cart?.items.length || 0}>
               <ShoppingCartIcon sx={{fontSize:"1.5rem"}} />
             </Badge>
             

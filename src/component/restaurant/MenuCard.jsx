@@ -8,11 +8,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { Button } from "@mui/material";
 import { categorizeIngredients } from "../util/categorizeIngredients";
-import { useDispatch } from "react-redux";
-import { addItemToCart } from "../state/cart/Action";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart, findCart, updateCartItem } from "../state/cart/Action";
  
 const MenuCard = ({ item }) => {
   const dispatch = useDispatch();
+  const cart = useSelector(state => state.cart);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const handleCheckBoxChange = (value) => {
     console.log("i check this : "+value);
@@ -23,21 +24,30 @@ const MenuCard = ({ item }) => {
     }
   };
 
-  
 
   const handleAddToCart = (e) => { 
     e.preventDefault();
+    const jwt = localStorage.getItem("jwt");
     const reqData = {
-      token: localStorage.getItem("jwt"),
+      token: jwt,
       cartItem: {
-        foodId: item.id,
+        foodId: item.id, 
         quantity: 1,
         ingredients: selectedIngredients,
       }
     };
-    dispatch(addItemToCart(reqData));
-    console.log("get add cart request :", reqData.cartItem);
-  }
+    const ExistingCartItem = cart.cart?.items.filter(cartItem => cartItem.food.id === reqData.cartItem.foodId);
+    console.log(ExistingCartItem);
+    if (ExistingCartItem.length!==0) {
+      const data = { cartItemId: ExistingCartItem[0].id, quantity: ExistingCartItem[0].quantity+1 };
+      dispatch(updateCartItem({ data, jwt }));
+        console.log("update cart request :", data);
+    } else {
+        dispatch(addItemToCart(reqData));
+        console.log("get add cart request :", reqData.cartItem);
+    }
+}
+
   return (
     <Accordion>
       <AccordionSummary
