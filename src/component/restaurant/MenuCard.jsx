@@ -14,6 +14,9 @@ import { addItemToCart, findCart, updateCartItem } from "../state/cart/Action";
 const MenuCard = ({ item }) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
+  const cartItems = useSelector(state => state.cart.cartItems);
+
+
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const handleCheckBoxChange = (value) => {
     console.log("i check this : "+value);
@@ -36,7 +39,8 @@ const MenuCard = ({ item }) => {
         ingredients: selectedIngredients,
       }
     };
-    const ExistingCartItem = cart.cart?.items.filter(cartItem => cartItem.food.id === reqData.cartItem.foodId);
+    console.log(cartItems)
+    const ExistingCartItem = cartItems.filter(cartItem => cartItem.food.id === reqData.cartItem.foodId);
     console.log(ExistingCartItem);
     if (ExistingCartItem.length!==0) {
       const data = { cartItemId: ExistingCartItem[0].id, quantity: ExistingCartItem[0].quantity+1 };

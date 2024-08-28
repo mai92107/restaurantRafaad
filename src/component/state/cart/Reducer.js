@@ -26,7 +26,7 @@ const cartReducer = (state = initialState, action) => {
             };
         
         case actionType.ADD_ITEMS_TO_CART_SUCCESS:
-
+            console.log('新增項目到購物車:', action.payload);
             const updatedCartItem = [action.payload, ...state.cartItems];
             const updatedTotalAdd = updatedCartItem.reduce((total, item) => {
                 return total + item.food.price * item.quantity;
@@ -48,6 +48,8 @@ const cartReducer = (state = initialState, action) => {
             };
         
         case actionType.REMOVE_CARTITEM_SUCCESS:
+            console.log('刪除項目:', action.payload);
+
             const filteredItems = state.cartItems.filter(
                 (item) => item.id !== action.payload
             );

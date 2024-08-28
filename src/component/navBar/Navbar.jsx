@@ -14,8 +14,8 @@ import { findCart } from '../state/cart/Action';
 
 export const Navbar = () => {
   const cart = useSelector(state => state.cart);
+  const cartItemsCount = useSelector(state => state.cart.cartItems.length);
 
-  console.log(cart.cart?.items.length);
   const auth = useSelector(state => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,7 +66,7 @@ export const Navbar = () => {
         </div>
         <div className=''>
           <IconButton onClick={()=>navigate("/cart")}>
-            <Badge color='primary' badgeContent={ cart.cart?.items.length || 0}>
+            <Badge color='primary' badgeContent={ cartItemsCount}>
               <ShoppingCartIcon sx={{fontSize:"1.5rem"}} />
             </Badge>
             
