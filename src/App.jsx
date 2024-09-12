@@ -7,11 +7,12 @@ import  Home  from './component/home/Home';
 import RestaurantDetail from './component/restaurant/RestaurantDetail';
 import Cart from './component/cart/Cart';
 import Profile from './component/profile/Profile';
-import CustomerRouter from './routers/CustomerRouter';
+import CustomerRouter from './routers/CustomerRoute';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from './component/state/authentication/Action';
 import { findCart } from '../src/component/state/cart/Action'
+import Routers from './routers/Routers';
 
 
 
@@ -30,8 +31,8 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline/>
-     
-      <CustomerRouter/>
+      {/* <CustomerRouter/> */}
+      <Routers/>
     </ThemeProvider>
   );
 }

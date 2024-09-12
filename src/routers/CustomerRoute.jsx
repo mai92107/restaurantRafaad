@@ -9,7 +9,7 @@ import Profile from '../component/profile/Profile'
 import Auth from '../component/auth/Auth'
 
 
-const CustomerRouter = () => {
+const CustomerRoute = () => {
   return (
       <div>
           <Navbar />
@@ -25,4 +25,4 @@ const CustomerRouter = () => {
   )
 }
 
-export default CustomerRouter
+export default CustomerRoute
