@@ -11,14 +11,15 @@ import OrderTable from "./OrderTable";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },
+  { label: "Delivering", value: "DELIVERING" },
   { label: "Compeleted", value: "COMPLETED" },
-  { label: "All", value: "ALL" },
 ];
 const Orders = () => {
-  const [filterValue, setFilterValue] = useState();
-  const handleFilter = (e, value) => {
-    setFilterValue(value);
+  const [filterValue, setFilterValue] = useState("ALL");
+  const handleFilter = (e,value) => {
+    setFilterValue(value);    
   };
+  
   return (
     <div className="px-2">
       <Card className="p-5">
@@ -32,7 +33,7 @@ const Orders = () => {
             name="category"
             value={filterValue || "all"}
           >
-            {orderStatus.map((item) => (
+            {orderStatus.map((item) =>
               <FormControlLabel
                 key={item.label}
                 value={item.value}
@@ -40,11 +41,11 @@ const Orders = () => {
                 label={item.label}
                 sx={{ color: "gray" }}
               />
-            ))}
+            )}
           </RadioGroup>
         </FormControl>
       </Card>
-      <OrderTable />
+      <OrderTable status={filterValue} />
     </div>
   );
 };

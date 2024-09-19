@@ -26,29 +26,29 @@ const menu = [
 ];
 
 const AdminSideBar = ({ handleClose }) => {
-  const isSmallScreen = useMediaQuery("(max-width:1080px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleNavigate = (item) => {
     navigate(`/admin/restaurants${item.path}`);
-    if (item.title === "Logut") {
+    if (item.title === "Logout") {
       navigate("/");
-      dispatch(logout);
+      dispatch(logout());
       handleClose();
+      console.log("logout");
     }
   };
 
   return (
     <div>
-      <>
+      
         <Drawer
-          variant={isSmallScreen ? "temporary" : "permanent"}
+          variant={"permanent"}
           onClose={handleClose}
-          open={true}
+          open={false}
           anchor="left"
           sx={{ zIndex: 1 }}
         >
-          <div className="w-[70vw] lg:w-[20vw] h-screen flex flex-col justify-center text-xl space-y-[1.65rem]">
+          <div className="lg:w-[20vw] h-screen flex flex-col justify-center text-xl space-y-[1.65rem]">
             {menu.map((item, i) => (
               <>
                 <div
@@ -63,7 +63,7 @@ const AdminSideBar = ({ handleClose }) => {
             ))}
           </div>
         </Drawer>
-      </>
+      
     </div>
   );
 };

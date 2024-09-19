@@ -1,5 +1,5 @@
-import api from '../../component/config/Api';
 import { CREATE_INGREDIENT_CATEGORY_FAILURE, CREATE_INGREDIENT_CATEGORY_REQUEST, CREATE_INGREDIENT_CATEGORY_SUCCESS, CREATE_INGREDIENT_FAILURE, CREATE_INGREDIENT_REQUEST, CREATE_INGREDIENT_SUCCESS, GET_INGREDIENT_CATEGORY_FAILURE, GET_INGREDIENT_CATEGORY_REQUEST, GET_INGREDIENT_CATEGORY_SUCCESS, GET_INGREDIENTS, UPDATE_STOCK } from './ActionType';
+import {api} from '../../../component/config/Api';
 
 
 export const getIngredientsOfRestaurant = ({ id, jwt }) => {
@@ -45,7 +45,7 @@ export const createIngredientCategory = ({ data, jwt }) => {
                     Authorization: `Bearer ${jwt}`
                 }
             });
-            console.log("create ingredients cayegory", response.data);
+            console.log("create ingredients category", response.data);
             dispatch({ type: CREATE_INGREDIENT_CATEGORY_SUCCESS, payload: response.data });
         } catch (error) {
             console.log("error ", error);
@@ -58,7 +58,7 @@ export const getIngredientCategory = ({ id, jwt }) => {
     return async (dispatch) => {
         dispatch({ type: GET_INGREDIENT_CATEGORY_REQUEST });
         try {
-            const response = await api.get(`/api/admin/ingredients/category/restaurant/${id}/category`, {
+            const response = await api.get(`/api/admin/ingredients/restaurant/${id}/category`, {
                 headers: {
                     Authorization: `Bearer ${jwt}`
                 }

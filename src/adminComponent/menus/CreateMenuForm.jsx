@@ -14,30 +14,43 @@ import {
   TextField,
 } from "@mui/material";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { uploadImageToCloudinary } from "../util/UploadToCloudinary";
+import { useDispatch, useSelector } from "react-redux";
+import { createMenuItem } from "../../component/state/menu/Action";
+import { getIngredientsOfRestaurant } from "../../component/state/ingredient/Action";
 
 const initialValues = {
   name: "",
   description: "",
   price: "",
   category: "",
+  images: [],
   restaurantId: "",
   vegetarian: true,
   seasonal: false,
   ingredients: [],
-  images: [],
 };
 
 const CreateMenuForm = () => {
   const [uploadImage, setUploadImage] = useState(false);
+  const restaurant = useSelector((store) => store.restaurant);
+  const ingredient = useSelector((store) => store.ingredient);
+  const jwt = localStorage.getItem("jwt");
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      values.restaurantId = 2;
-      console.log(" menu : ", values);
+      values.restaurantId = restaurant.usersRestaurant.id;
+      dispatch(createMenuItem({ menu: values, jwt }));
+      console.log(values);
     },
   });
+  useEffect(() => {
+    dispatch(
+      getIngredientsOfRestaurant({ id: restaurant.usersRestaurant.id, jwt })
+    );
+  },[]);
   const handleImageChange = async (e) => {
     try {
       const file = e.target.files[0];
@@ -56,18 +69,12 @@ const CreateMenuForm = () => {
     updatedImages.splice(index, 1);
     formik.setFieldValue("images", updatedImages);
   };
-
+ 
   return (
     <div className="py-10 px-5 lg:flex items-center justify-center min-h-screen">
       <div className="lg:max-w-4xl">
-        <h1 className="font-bold text-2xl text-center py-2">
-          Add New Menu
-        </h1>
-        <form
-          onSubmit={formik.handleSubmit}
-          className="space-y-8"
-          action=""
-        >
+        <h1 className="font-bold text-2xl text-center py-2">Add New Menu</h1>
+        <form onSubmit={formik.handleSubmit} className="space-y-8" action="">
           <Grid container spacing={2}>
             <Grid className="flex flex-wrap gap-5" item xs={12}>
               <input
@@ -155,9 +162,9 @@ const CreateMenuForm = () => {
                   label="Category"
                   onChange={formik.handleChange}
                 >
-                  {[1, 2, 7].map((name, index) => (
-                    <MenuItem key={index} value={name}>
-                      {name}
+                  {restaurant.categories?.map((item) => (
+                    <MenuItem key={item.id} value={item}>
+                      {item.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -182,15 +189,15 @@ const CreateMenuForm = () => {
                         gap: 0.8,
                       }}
                     >
-                      {selected.map((value, index) => (
-                        <Chip key={index} label={value} />
+                      {selected.map((value) => (
+                        <Chip key={value.id} label={value.name} />
                       ))}
                     </Box>
                   )}
                 >
-                  {[1, 1, 1, 1, 1].map((name, index) => (
-                    <MenuItem key={index} value={name}>
-                      {name}
+                  {ingredient.ingredients?.map((ingredient) => (
+                    <MenuItem key={ingredient.id} value={ingredient}>
+                      {ingredient.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -226,8 +233,8 @@ const CreateMenuForm = () => {
               </FormControl>
             </Grid>
           </Grid>
-          <Button  variant="contained" color="primary" type="submit">
-            Create your Restaurant
+          <Button variant="contained" color="primary" type="submit">
+            Create New Menu
           </Button>
         </form>
       </div>

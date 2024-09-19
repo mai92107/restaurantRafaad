@@ -14,8 +14,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CreateFoodCategory from "./CreateFoodCategoryForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantsCategory } from "../../component/state/restaurant/Action";
 
 const orders = [1, 1, 1, 1, 1];
 const style = {
@@ -30,9 +32,23 @@ const style = {
   p: 4,
 };
 const FoodCategoryTable = () => {
+  const jwt = localStorage.getItem("jwt");
+
+  const dispatch = useDispatch();
+  const restaurant = useSelector((store) => store.restaurant);
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    dispatch(
+      getRestaurantsCategory({
+        jwt,
+        restaurantId: restaurant.usersRestaurant?.id,
+      })
+    );
+  }, []);
   return (
     <Box>
       <Card className="mt-1">
@@ -54,12 +70,12 @@ const FoodCategoryTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
-                <TableRow key={row.name}>
+              {restaurant.categories?.map((category, index) => (
+                <TableRow key={index}>
                   <TableCell align="left" component="th" scope="row">
-                    {1}
+                    {category.id}
                   </TableCell>
-                  <TableCell align="left">{"name"}</TableCell>
+                  <TableCell align="left">{category.name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -74,7 +90,7 @@ const FoodCategoryTable = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CreateFoodCategory/>
+          <CreateFoodCategory />
         </Box>
       </Modal>
     </Box>

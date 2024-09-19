@@ -13,10 +13,14 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CreateIngredientCategoryForm from "./CreateIngredientCategoryForm";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getIngredientCategory,
+  getIngredientsOfRestaurant,
+} from "../../component/state/ingredient/Action";
 
-const orders = [1, 1, 1, 1, 1];
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,9 +33,18 @@ const style = {
   p: 4,
 };
 const IngredientCategoryTable = () => {
+  const jwt = localStorage.getItem("jwt");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const dispatch = useDispatch();
+  const  restaurant  = useSelector((store) => store.restaurant);
+  const  ingredient  = useSelector((store) => store.ingredient);
+  console.log(ingredient);
+
+  useEffect(() => {
+    dispatch(getIngredientCategory({ id: restaurant.usersRestaurant.id, jwt }));
+  }, []);
   return (
     <Box>
       <Card className="mt-1">
@@ -53,12 +66,12 @@ const IngredientCategoryTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
-                <TableRow key={row.name}>
+              {ingredient.category?.map((category, index) => (
+                <TableRow key={index}>
                   <TableCell align="left" component="th" scope="row">
-                    {1}
+                    {category.id}
                   </TableCell>
-                  <TableCell align="left">{"name"}</TableCell>
+                  <TableCell align="left">{category.name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -72,7 +85,7 @@ const IngredientCategoryTable = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CreateIngredientCategoryForm/>
+          <CreateIngredientCategoryForm />
         </Box>
       </Modal>
     </Box>

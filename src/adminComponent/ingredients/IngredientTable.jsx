@@ -1,6 +1,7 @@
 import { Create } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Card,
   CardHeader,
   IconButton,
@@ -13,8 +14,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import CreateIngredientForm from "./CreateIngredientForm";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getIngredientsOfRestaurant,
+  updateStockOfIngredient,
+} from "../../component/state/ingredient/Action";
 
 const orders = [1, 1, 1, 1, 1];
 const style = {
@@ -32,14 +38,31 @@ const IngredientTable = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const jwt = localStorage.getItem("jwt");
+  const dispatch = useDispatch();
+
+  const restaurant = useSelector((store) => store.restaurant);
+  const ingredient = useSelector((store) => store.ingredient);
+  const handleUpdateStock = (id) => {
+    dispatch(updateStockOfIngredient({ id, jwt }));
+  };
+  useEffect(() => {
+    dispatch(
+      getIngredientsOfRestaurant({ id: restaurant.usersRestaurant.id, jwt })
+    );
+  }, []);
   return (
     <Box>
       <Card className="mt-1">
-        <CardHeader action={
+        <CardHeader
+          action={
             <IconButton onClick={handleOpen} aria-label="settings">
               <Create />
             </IconButton>
-          } title={"Ingredients"} sx={{ pt: 2, alignItems: "center" }} />
+          }
+          title={"Ingredients"}
+          sx={{ pt: 2, alignItems: "center" }}
+        />
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
@@ -51,14 +74,23 @@ const IngredientTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((row) => (
-                <TableRow key={row.name}>
+              {ingredient.ingredients?.map((ingredient) => (
+                <TableRow key={ingredient.id}>
                   <TableCell component="th" scope="row">
-                    {1}
+                    {ingredient.id}
                   </TableCell>
-                  <TableCell align="right">{"image"}</TableCell>
-                  <TableCell align="right">{"price"}</TableCell>
-                  <TableCell align="right">{"pizza"}</TableCell>
+                  <TableCell align="right">{ingredient.name}</TableCell>
+                  <TableCell align="right">
+                    {ingredient.category.name}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      color={ingredient.instock ? "success" : "error"}
+                      onClick={() => handleUpdateStock(ingredient.id)}
+                    >
+                      {ingredient.instock ? "Still Available" : "Out Of Stock"}
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -72,7 +104,7 @@ const IngredientTable = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CreateIngredientForm/>
+          <CreateIngredientForm />
         </Box>
       </Modal>
     </Box>

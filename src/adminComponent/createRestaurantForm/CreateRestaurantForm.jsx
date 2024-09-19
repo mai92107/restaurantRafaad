@@ -9,6 +9,8 @@ import {
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { uploadImageToCloudinary } from "../util/UploadToCloudinary";
+import { useDispatch } from "react-redux";
+import { createRestaurant } from "../../component/state/restaurant/Action";
 
 const initialValues = {
   name: "",
@@ -27,6 +29,8 @@ const initialValues = {
 };
 
 const CreateRestaurantForm = () => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
   const [uploadImage, setUploadImage] = useState(false);
   const formik = useFormik({
     initialValues,
@@ -47,10 +51,11 @@ const CreateRestaurantForm = () => {
           instagram: values.instagram,
           facebook: values.facebook,
         },
-        openingHour: values.openingHour,
+        openingTime: values.openingHour,
         images: values.images,
       };
       console.log("restaurant data : ", data);
+      dispatch(createRestaurant({data, token: jwt}))
     },
   });
   const handleImageChange = async (e) => {
