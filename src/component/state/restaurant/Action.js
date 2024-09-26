@@ -9,6 +9,9 @@ import {
   CREATE_RESTAURANT_FAILURE,
   CREATE_RESTAURANT_REQUEST,
   CREATE_RESTAURANT_SUCCESS,
+  DELETE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_REQUEST,
+  DELETE_CATEGORY_SUCCESS,
   DELETE_EVENT_REQUEST,
   DELETE_EVENT_SUCCESS,
   DELETE_RESTAURANT_FAILURE,
@@ -20,6 +23,9 @@ import {
   GET_ALL_RESTAURANT_FAILURE,
   GET_ALL_RESTAURANT_REQUEST,
   GET_ALL_RESTAURANT_SUCCESS,
+  GET_FOOD_BY_CATEGORY_FAILURE,
+  GET_FOOD_BY_CATEGORY_REQUEST,
+  GET_FOOD_BY_CATEGORY_SUCCESS,
   GET_RESTAURANT_BY_ID_FAILURE,
   GET_RESTAURANT_BY_ID_REQUEST,
   GET_RESTAURANT_BY_ID_SUCCESS,
@@ -281,3 +287,39 @@ export const getRestaurantsCategory = ({ jwt, restaurantId }) => {
     }
   };
 };
+export const deleteCategory = ({ categoryId, jwt }) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_CATEGORY_REQUEST });
+    try {
+      const res = await api.delete(`/api/admin/restaurants/category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      dispatch({ type: DELETE_CATEGORY_SUCCESS, payload: res.data });
+      console.log("delete category :", res.data);
+    } catch (error) {
+      dispatch({ type: DELETE_CATEGORY_FAILURE, payload: error });
+      console.log("error : ", error);
+    }
+  };
+};
+
+export const getFoodByCategory = ({ jwt, categoryId }) => {
+  return async (dispatch) => {
+    dispatch({ type: GET_FOOD_BY_CATEGORY_REQUEST });
+    try {
+      const res = await api.get(`/api/admin/food/category/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      dispatch({ type: GET_FOOD_BY_CATEGORY_SUCCESS, payload: res.data });
+      console.log("get foods by category", res.data);
+    } catch (error) {
+      dispatch({ type: GET_FOOD_BY_CATEGORY_FAILURE, payload: error });
+      console.log("error : ", error);
+    }
+  };
+};
+

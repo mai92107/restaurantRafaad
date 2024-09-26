@@ -1,4 +1,4 @@
-import { Create, Delete } from "@mui/icons-material";
+import { Create, Delete, DeleteOutlined } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -14,12 +14,15 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CreateFoodCategory from "./CreateFoodCategoryForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getRestaurantsCategory } from "../../component/state/restaurant/Action";
+import {
+  deleteCategory,
+  getFoodByCategory,
+  getRestaurantsCategory,
+} from "../../component/state/restaurant/Action";
 
-const orders = [1, 1, 1, 1, 1];
 const style = {
   position: "absolute",
   top: "50%",
@@ -40,6 +43,18 @@ const FoodCategoryTable = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  console.log(restaurant);
+  const handleRemove = (categoryId) => {
+    dispatch(getFoodByCategory({ jwt, categoryId }));
+
+    if (restaurant.foods.length === 0) {
+      dispatch(deleteCategory({ categoryId, jwt }));
+    }
+    // else {
+    //   confirm("分類內仍有食物，確定要刪除？") &&
+    //     dispatch(deleteCategory({ categoryId, jwt }));
+    // }
+  };
 
   useEffect(() => {
     dispatch(
@@ -51,7 +66,7 @@ const FoodCategoryTable = () => {
   }, []);
   return (
     <Box>
-      <Card className="mt-1">
+      <Card className="m-10">
         <CardHeader
           action={
             <IconButton onClick={handleOpen} aria-label="settings">
@@ -61,21 +76,25 @@ const FoodCategoryTable = () => {
           title={"Food Category"}
           sx={{ pt: 2, alignItems: "center" }}
         />
-        <TableContainer component={Paper}>
+        <TableContainer className="m-10 w-5" component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Id</TableCell>
+                <TableCell align="left">List</TableCell>
                 <TableCell align="left">Name</TableCell>
+                <TableCell align="center"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {restaurant.categories?.map((category, index) => (
                 <TableRow key={index}>
                   <TableCell align="left" component="th" scope="row">
-                    {category.id}
+                    {index + 1}
                   </TableCell>
                   <TableCell align="left">{category.name}</TableCell>
+                  <TableCell align="center">
+                    <DeleteOutlined onClick={() => handleRemove(category.id)} />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
